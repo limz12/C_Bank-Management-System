@@ -44,10 +44,16 @@ void signup()
     FILE *fileptrB;
 
     fileptrB = fopen("files/contas.bin","rb");
-    
+    char nome[20];
+    scanf("%s",&nome);
     while(fread(&conta, sizeof(CONTABANCARIA), 1, fileptrB)) // LE LINHA A LINHA E DA PRINT DO CONTEUDO
     { 
         printf("%s\t%s\t%i\n", conta.nome, conta.password, conta.montante);
+        if(strcmp(conta.nome, nome) == 0)
+        {
+            printf("Essa conta ja existe!\n");
+        }
+
     }
     fclose(fileptrB);
  }
