@@ -32,7 +32,7 @@ void signup()
         //adicionar o montante de 1000€
         conta.montante = 1000;
         //adicionar estas variaveis ao ficheiro
-        fwrite(&conta, sizeof(conta), 1, fileptrA);
+        fwrite(&conta, sizeof(conta), 1, fileptrA); //GUARDAR TUDO O QUE É DA CONTA
         printf("Conta criada com sucesso!");
         fclose(fileptrA);
      }  
@@ -45,7 +45,7 @@ void signup()
 
     fileptrB = fopen("files/contas.bin","rb");
     
-    while(fread(&conta, sizeof(CONTABANCARIA), 1, fileptrB))
+    while(fread(&conta, sizeof(CONTABANCARIA), 1, fileptrB)) // LE LINHA A LINHA E DA PRINT DO CONTEUDO
     { 
         printf("%s\t%s\t%i\n", conta.nome, conta.password, conta.montante);
     }
