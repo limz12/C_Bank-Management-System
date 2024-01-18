@@ -12,49 +12,58 @@ typedef struct contaBancaria
     int montante;
 }CONTABANCARIA;
 
+char verificarConta[25];
+
 void signup()
 {
     struct contaBancaria conta;
-    FILE *fileptrA, *fileptrB;
-    
+    FILE *fileptrA;
 
     printf("\nBem vindo ao registo do banco XPTO!");
     printf("\nPretende criar uma conta? <s/n>");
     if (getch()== 's' )
     {
-        printf("\nQual e o nome da conta?");
-        scanf ("\n%s", &conta.nome);
-        printf("\nQual e a palavra-passe?");
-        scanf("\n%s", &conta.password);
+        printf("\nQual e o nome da conta? :");
+        scanf ("\n %s", &conta.nome);
+        printf("Repete o nome da conta :");
+        scanf ("\n %s", &verificarConta);
+        printf("Qual e a palavra-passe? :");
+        scanf("\n %s", &conta.password);
+        
+        fileptrA = fopen("files/contas.bin","ab");
+        if (strcmp(conta.nome,verificarConta) == 0)
+        {
+            leituraVerificar();
 
-        fileptrA = fopen("files/contas.bin","a");
-
-        //adicionar o montante de 1000€
-        conta.montante = 1000;
-        //adicionar estas variaveis ao ficheiro
-        fwrite(&conta, sizeof(conta), 1, fileptrA); //GUARDAR TUDO O QUE É DA CONTA
-        printf("Conta criada com sucesso!");
-        fclose(fileptrA);
-     }  
- }
-
- void leitura()
+            //adicionar o montante de 1000€
+            conta.montante = 1000;
+            //adicionar estas variaveis ao ficheiro
+            fwrite(&conta, sizeof(conta), 1, fileptrA); //GUARDAR TUDO O QUE É DA CONTA
+            printf("Conta criada com sucesso!");
+            printf("%s\t%s\t%i\n", conta.nome, conta.password, conta.montante);
+            fclose(fileptrA);
+        }else{
+            printf("ERRO! Introduziste nomes diferentes!");
+        }
+    }
+}
+ void leituraVerificar() //Verificar se a conta já existe no ficheiro se sim da exit do programa!
  {
     CONTABANCARIA conta;
     FILE *fileptrB;
 
     fileptrB = fopen("files/contas.bin","rb");
-    char nome[20];
-    scanf("%s",&nome);
+    
     while(fread(&conta, sizeof(CONTABANCARIA), 1, fileptrB)) // LE LINHA A LINHA E DA PRINT DO CONTEUDO
     { 
-        printf("%s\t%s\t%i\n", conta.nome, conta.password, conta.montante);
-        if(strcmp(conta.nome, nome) == 0)
+        
+        if(strcmp(conta.nome, verificarConta) == 0)
         {
-            printf("Essa conta ja existe!\n");
+            printf("%s\t%s\t%i\n", conta.nome, conta.password, conta.montante);
+            printf("ERRO! Esta conta ja existe!\n");
+            fclose(fileptrB);
+            exit(1); //E salta novamente para o signup() continuando da linha 36 para a frente
         }
-
     }
-    fclose(fileptrB);
  }
     
