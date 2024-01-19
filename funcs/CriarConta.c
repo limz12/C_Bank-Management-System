@@ -46,7 +46,7 @@ void signup()
     }
 
 }
- void leituraVerificar() //Verificar se a conta já existe no ficheiro se sim da exit do programa!
+void leituraVerificar() //Verificar se a conta já existe no ficheiro se sim da exit do programa!
  {
     struct conta conta;
     FILE *fileptrB;
@@ -58,7 +58,7 @@ void signup()
         {
             printf("ERRO! Esta conta ja existe!\n");
             fclose(fileptrB);
-            exit(1); //E salta novamente para o signup() continuando da linha 36 para a frente
+            exit(1); //fecha o programa
         }
     }
  }
@@ -86,9 +86,10 @@ void login() //FUNCAO PARA DAR  LOGIN NA CONTA
         {
             if(strcmp(conta.password, veriricarPass) == 0)
             {
-                printf("\nBem vindo à conta %s!",conta.nome);
-                printf("\nTens na conta : %i€",conta.montante);
+                printf("\nBem vindo %s!",conta.nome);
                 fclose(ptrfile);
+                menuEscolhas();
+                
             }
         } else{
             printf("\nERROR! Password ou Username errado!");
@@ -96,3 +97,43 @@ void login() //FUNCAO PARA DAR  LOGIN NA CONTA
     }
     fclose(ptrfile);
 }  
+
+
+void menuEscolhas()
+{
+    FILE * ptrFile;
+    struct conta conta; //para poder usar na func
+    int escolha;
+
+    printf("\nO que pretendes fazer?");
+    printf("\n1 : Ver informacao da conta");
+    printf("\n2 : Fazer transferencia monetaria para outra conta\n");
+    scanf("\n%i",&escolha);
+
+    if(escolha == 1)
+    {
+        ptrFile = fopen("files/contas.bin","rb");
+
+        while(fread(&conta,sizeof(CONTABANCARIA), 1, ptrFile))
+        {
+            if (strcmp(conta.nome, verificarConta) == 0)
+            {
+                printf("\nInfo da conta ");
+                printf("\nNome : %s\t Password : %s\t Montante: %i", conta.nome, conta.password, conta.montante);
+            } 
+        }
+        fclose(ptrFile);
+    }
+    if (escolha == 2)
+    {
+        //FAZER A TRANSEFERENCIA DE SALDO
+        // 1-> Pedir o montante a transferir (abrir com wb+ (permite ler e escrever no ficheiro), fwrite e debitar o montante)
+        // 2-> Abrir em wb+ (permite ler e escrever no ficheiro), verificar se o user existe, e se existir adicionar a quantia 
+    } else{
+        printf("\nERRO! A escolha nao existe!");
+    }
+}
+
+
+    
+

@@ -9,7 +9,7 @@
 void main()
 {
     
-   //signup();
+   signup();
     login();
     
 }
