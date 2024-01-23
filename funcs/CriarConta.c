@@ -114,7 +114,7 @@ void menuEscolhas()
     {
         ptrFile = fopen("files/contas.bin","rb");
 
-        while(fread(&conta,sizeof(CONTABANCARIA), 1, ptrFile))
+        while(fread(&conta,sizeof(conta), 1, ptrFile))
         {
             if (strcmp(conta.nome, verificarConta) == 0)
             {
@@ -127,10 +127,39 @@ void menuEscolhas()
     if (escolha == 2)
     {
         //FAZER A TRANSEFERENCIA DE SALDO
-        // 1-> Pedir o montante a transferir (abrir com wb+ (permite ler e escrever no ficheiro), fwrite e debitar o montante)
-        // 2-> Abrir em wb+ (permite ler e escrever no ficheiro), verificar se o user existe, e se existir adicionar a quantia 
-    } else{
-        printf("\nERRO! A escolha nao existe!");
+        int transferir;
+        
+        // 1-> abrir um file em modo leitura
+        FILE *ptr, *ptr2;
+        ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
+        ptr2 = fopen("files/replica.bin", "wb"); //este ficheiro sera a copia do anterior com todas as contas menos a do user em questão
+        printf("\nQuanto queres transeferir? ( € )");
+        scanf("%i",&transferir);
+        //COPIAR TODAS AS INFOS DAS CONTAS PARA O replica.bin MENOS DO USER EM QUESTAO
+        
+        while(fread(&conta,sizeof(conta), 1, ptr))
+        {
+            if (strcmp(conta.nome, verificarConta) == 0) //SE O USER FOR IGUAL
+            {
+                if(conta.montante > transferir)
+                {
+                    conta.montante = conta.montante - transferir; //subtrair o saldo em conta
+                }
+                else{
+                    printf("\nERROR! NAO TENS DINHEIRO QUE PARA EFETUAR ESTA TRANSFERENCIA");
+                }
+            }else{
+                fwrite(&conta,sizeof(conta),1,ptr2); //COPIA AS INFOS PARA O NOVO FICHEIRO
+            }
+        }
+
+        fwrite(&conta,sizeof(conta),1,ptr2); // ISTO E PARA ASSEGURAR QUE APENAS UMA INSTANCIA DE DADOS DO MESMO USER E GRAVADA
+
+        fclose(ptr);
+        fclose(ptr2);
+        remove("files/contas.bin");
+        rename("files/replica.bin", "files/contas.bin");
+         
     }
 }
 
