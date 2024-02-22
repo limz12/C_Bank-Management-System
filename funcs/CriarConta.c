@@ -2,7 +2,6 @@
 #include <stdlib.h>
 // Library where getch() is stored
 #include <conio.h>
-
 typedef struct conta
 {
     char nome[25];
@@ -19,6 +18,10 @@ void signup()
     struct conta conta;
     FILE *fileptrA;
 
+    //caso de erro evita que o programa inicie com ficheiros
+    remove("files/replica.bin"); 
+    remove("files/replica2.bin");
+
     printf("\nBem vindo ao registo do banco XPTO!");
     printf("\nPretende criar uma conta? <s/n>");
     if (getch()== 's' )
@@ -34,7 +37,6 @@ void signup()
         if (strcmp(conta.nome,verificarConta) == 0)
         {
             leituraVerificar();
-
             //adicionar o montante de 1000€
             conta.montante = 1000;
             //adicionar estas variaveis ao ficheiro
@@ -45,13 +47,11 @@ void signup()
             printf("ERRO! Introduziste nomes diferentes!");
         }
     }
-
 }
 void leituraVerificar() //Verificar se a conta já existe no ficheiro se sim da exit do programa!
  {
     struct conta conta;
     FILE *fileptrB;
-
     fileptrB = fopen("files/contas.bin","rb");
     while(fread(&conta, sizeof(CONTABANCARIA), 1, fileptrB)) // LE LINHA A LINHA E DA PRINT DO CONTEUDO
     { 
@@ -68,18 +68,15 @@ void leituraVerificar() //Verificar se a conta já existe no ficheiro se sim da 
 void login() //FUNCAO PARA DAR  LOGIN NA CONTA
 {  
     struct conta conta; //para poder usar na func
-
     
     printf("\nBem vindo ao sistema de Login do Banco XPTO!");
     printf("\nInsira a nome da sua conta : ");
     scanf("\n%s",&verificarConta);
     printf("Insira a sua palavra passe : ");
     scanf("\n%s",&veriricarPass);
-
     //ABRIR O ficheiro para leitura
     FILE *ptrfile;
     ptrfile = fopen("files/contas.bin","rb");
-
     //Ler o ficheiro à procura de um user igual com a mesma passe
     while(fread(&conta,sizeof(CONTABANCARIA), 1, ptrfile)) //VAI LER O FICHEIRO LINHA A LINHA
     {
@@ -106,16 +103,13 @@ void menuEscolhas()
     FILE *ptrFile;
     struct conta conta; //para poder usar na func
     int escolha;
-
     printf("\nO que pretendes fazer?");
     printf("\n1 : Ver informacao da conta");
     printf("\n2 : Fazer transferencia monetaria para outra conta\n");
     scanf("\n%i",&escolha);
-
     if(escolha == 1)
     {
         ptrFile = fopen("files/contas.bin","rb");
-
         while(fread(&conta,sizeof(conta), 1, ptrFile))
         {
             if (strcmp(conta.nome, verificarConta) == 0)
@@ -154,14 +148,10 @@ void menuEscolhas()
                 fwrite(&conta,sizeof(conta),1,ptr2); //COPIA AS INFOS PARA O NOVO FICHEIRO
             }
         }
-
         fwrite(&conta,sizeof(conta),1,ptr2); // ISTO E PARA ASSEGURAR QUE APENAS UMA INSTANCIA DE DADOS DO MESMO USER E GRAVADA
 
         fclose(ptr);
         fclose(ptr2);
-      
-       // remove("files/contas.bin");
-       // rename("files/replica.bin", "files/contas.bin");
 
         //adicionar o saldo a outra conta
 
@@ -178,21 +168,20 @@ void menuEscolhas()
        ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
        ptr2 = fopen("files/replica2.bin", "wb");
 
-       //rewind(ptr);
-       //rewind(ptr2);
+       rewind(ptr);
+       rewind(ptr2);
 
         //percorrer o ficheiro pela conta que recebe o saldo
         while(fread(&conta, sizeof(conta), 1, ptr))
         {
             if (strcmp(conta.nome , contaTransf) == 0) //se o nome for igual no ficheiro
             {
-                printf("A transferir!");
                 conta.montante = conta.montante + transferir;
                 fwrite(&conta, sizeof(conta),1,ptr2);
             }else{
                 fwrite(&conta, sizeof(conta),1,ptr2);
-            }   
-            
+            } 
+
         }
 
         fwrite(&conta, sizeof(conta), 1,ptr2);
@@ -206,7 +195,3 @@ void menuEscolhas()
          //se nao resolver trocar o fileptr2 para "ab" e a abrir o contas.bin 
     }
 }
-
-
-    
-
