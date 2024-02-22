@@ -150,8 +150,13 @@ void menuEscolhas()
         }
         fwrite(&conta,sizeof(conta),1,ptr2); // ISTO E PARA ASSEGURAR QUE APENAS UMA INSTANCIA DE DADOS DO MESMO USER E GRAVADA
 
+       
         fclose(ptr);
         fclose(ptr2);
+
+        remove("files/contas.bin");
+        rename("files/replica.bin", "files/contas.bin");
+
 
         //adicionar o saldo a outra conta
 
@@ -162,14 +167,14 @@ void menuEscolhas()
        rewind(ptr);
        rewind(ptr2);
 
-       remove("files/contas.bin");
-       rename("files/replica.bin", "files/contas.bin");
+       //remove("files/contas.bin");
+       //rename("files/replica.bin", "files/contas.bin");
 
        ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
        ptr2 = fopen("files/replica2.bin", "wb");
 
-       rewind(ptr);
-       rewind(ptr2);
+       //rewind(ptr);
+       //rewind(ptr2);
 
         //percorrer o ficheiro pela conta que recebe o saldo
         while(fread(&conta, sizeof(conta), 1, ptr))
@@ -184,13 +189,10 @@ void menuEscolhas()
 
         }
 
-        fwrite(&conta, sizeof(conta), 1,ptr2);
+        //fwrite(&conta, sizeof(conta), 1,ptr2);
 
         fclose(ptr);
         fclose(ptr2);
-
-        rewind(ptr);
-        rewind(ptr2);
 
         remove("files/contas.bin");
         rename("files/replica2.bin", "files/contas.bin");
