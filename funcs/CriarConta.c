@@ -189,6 +189,9 @@ void menuEscolhas()
         fclose(ptr);
         fclose(ptr2);
 
+        rewind(ptr);
+        rewind(ptr2);
+
         remove("files/contas.bin");
         rename("files/replica2.bin", "files/contas.bin");
 
