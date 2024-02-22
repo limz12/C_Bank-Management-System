@@ -12,11 +12,16 @@ typedef struct conta
 
 char verificarConta[25];
 char veriricarPass[30];
+char contaTransf[25];
 
 void signup()
 {
     struct conta conta;
     FILE *fileptrA;
+
+    //caso de erro evita que o programa inicie com ficheiros
+    remove("files/replica.bin"); 
+    remove("files/replica2.bin");
 
     printf("\nBem vindo ao registo do banco XPTO!");
     printf("\nPretende criar uma conta? <s/n>");
@@ -96,12 +101,13 @@ void login() //FUNCAO PARA DAR  LOGIN NA CONTA
         }
     }
     fclose(ptrfile);
+
 }  
 
 
 void menuEscolhas()
 {
-    FILE * ptrFile;
+    FILE *ptrFile;
     struct conta conta; //para poder usar na func
     int escolha;
 
@@ -157,9 +163,57 @@ void menuEscolhas()
 
         fclose(ptr);
         fclose(ptr2);
+
+        //adicionar o saldo a outra conta
+
+        printf("\nPara qual conta queres transferir?");
+        scanf("%s",&contaTransf);
+
+        //abrir o ficheiro para leitura
+       rewind(ptr);
+       rewind(ptr2);
+
+       remove("files/contas.bin");
+       rename("files/replica.bin", "files/contas.bin");
+
+       ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
+       ptr2 = fopen("files/replica2.bin", "wb");
+        
+        //verificar se o user existe
+        while (fread(&conta, sizeof(conta),1,ptr))
+        {
+            if (strcmp(conta.nome , contaTransf) == 0)
+            {
+                printf("\nA conta existe!");
+                printf("\nA transferir!");
+            } else{
+                printf("ERRO! A conta para quem quer transferir não existe!");
+                exit(1); //se nao existir volta para o menuEscolhas
+            }
+        }
+
+        //percorrer o ficheiro pela conta que recebe o saldo
+        while(fread(&conta, sizeof(conta), 1, ptr))
+        {
+            if (strcmp(conta.nome , contaTransf) == 0) //se o nome for igual no ficheiro
+            {
+                conta.montante = conta.montante + transferir;
+                fwrite(&conta, sizeof(conta),1,ptr2);
+            }else{
+                fwrite(&conta, sizeof(conta),1,ptr2);
+            } 
+            
+        }
+
+        fwrite(&conta, sizeof(conta), 1,ptr2);
+
+        fclose(ptr);
+        fclose(ptr2);
+
         remove("files/contas.bin");
-        rename("files/replica.bin", "files/contas.bin");
-         
+        rename("files/replica2.bin", "files/contas.bin");
+
+         //se nao resolver trocar o fileptr2 para "ab" e a abrir o contas.bin 
     }
 }
 
