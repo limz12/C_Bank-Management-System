@@ -22,6 +22,8 @@ typedef struct conta
     char nome[25];
     char password[30];
     int montante;
+    char nomeTransf[25];
+    
 }CONTABANCARIA;
 
 typedef struct historico //struct que vai ser guardada no ficheiro "accHistory"
@@ -162,6 +164,8 @@ void menuEscolhas()
         ptr2 = fopen("files/replica.bin", "wb"); //este ficheiro sera a copia do anterior com todas as contas menos a do user em questão
         printf("\nQuanto queres transeferir? ( € )");
         scanf("%i",&transferir);
+        printf("\nPara qual conta queres transferir?");
+        scanf("%s",&contaTransf);
         //COPIAR TODAS AS INFOS DAS CONTAS PARA O replica.bin MENOS DO USER EM QUESTAO
         
         while(fread(&conta,sizeof(conta), 1, ptr))
@@ -170,6 +174,8 @@ void menuEscolhas()
             {
                 if(conta.montante > transferir)
                 {
+                    //teste
+                    strcpy(conta.nomeTransf,contaTransf);
                     conta.montante = conta.montante - transferir; //subtrair o saldo em conta
                     fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
                     fwrite(&conta,sizeof(CONTABANCARIA),1,ptrHistorico);
@@ -193,10 +199,7 @@ void menuEscolhas()
 
 
         //adicionar o saldo a outra conta
-
-        printf("\nPara qual conta queres transferir?");
-        scanf("%s",&contaTransf);
-
+       
         ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
         ptr2 = fopen("files/replica.bin", "wb");
        
@@ -207,6 +210,9 @@ void menuEscolhas()
         {
             if (strcmp(conta.nome, contaTransf) == 0) //SE O USER FOR IGUAL
             {
+                //teste
+                strcpy(conta.nomeTransf,verificarConta);
+                //teste
                 conta.montante = conta.montante + transferir; 
                 fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
                 fwrite(&conta,sizeof(CONTABANCARIA),1,ptrHistorico);
@@ -270,7 +276,7 @@ void menuEscolhas()
         {   
             if(strcmp(conta.nome, verificarConta) == 0)
             {
-                printf("\nHistorico de saldo : %i",conta.montante);
+                printf("\nHistorico de saldo : %i Vindo/Para : %s",conta.montante, conta.nomeTransf);
             }
         }
 
