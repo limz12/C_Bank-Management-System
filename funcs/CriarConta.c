@@ -14,7 +14,6 @@
                                                                  
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,6 +27,7 @@ typedef struct conta
 char verificarConta[25];
 char veriricarPass[30];
 char contaTransf[25];
+
 
 void signup()
 {
@@ -47,9 +47,11 @@ void signup()
         scanf ("\n %s", &verificarConta);
         printf("Qual e a palavra-passe? :");
         scanf("\n %s", &conta.password);
+        printf("Repete o nome da palavra-passe :");
+        scanf ("\n %s", &veriricarPass);
         
         fileptrA = fopen("files/contas.bin","ab");
-        if (strcmp(conta.nome,verificarConta) == 0)
+        if (strcmp(conta.nome,verificarConta) == 0 && strcmp(conta.password,veriricarPass) == 0)
         {
             leituraVerificar();
             //adicionar o montante de 1000€
@@ -59,7 +61,8 @@ void signup()
             printf("Conta criada com sucesso!");
             fclose(fileptrA);
         }else{
-            printf("ERRO! Introduziste nomes diferentes!");
+            printf("ERRO na criacao de conta! Username/Pass nao e igual !");
+            exit(1);
         }
     }
 }
