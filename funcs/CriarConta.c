@@ -18,9 +18,8 @@ void signup()
     struct conta conta;
     FILE *fileptrA;
 
-    //caso de erro evita que o programa inicie com ficheiros
+    //caso de erro evita que o programa inicie com ficheiros que não é soposto
     remove("files/replica.bin"); 
-    remove("files/replica2.bin");
 
     printf("\nBem vindo ao registo do banco XPTO!");
     printf("\nPretende criar uma conta? <s/n>");
@@ -165,8 +164,8 @@ void menuEscolhas()
         printf("\nPara qual conta queres transferir?");
         scanf("%s",&contaTransf);
 
-       ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
-       ptr2 = fopen("files/replica.bin", "wb");
+        ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
+        ptr2 = fopen("files/replica.bin", "wb");
        
        rewind(ptr);
        rewind(ptr2);
