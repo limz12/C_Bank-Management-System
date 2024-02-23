@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-// Library where getch() is stored
-#include <conio.h>
+
 typedef struct conta
 {
     char nome[25];
@@ -99,13 +98,17 @@ void login() //FUNCAO PARA DAR  LOGIN NA CONTA
 
 void menuEscolhas()
 {
-    FILE *ptrFile;
+    FILE *ptrFile, *ptrHistorico;
+    //guardar historico de transacoes
+    ptrHistorico = fopen("files/accHistory.bin","ab");
+    
     struct conta conta; //para poder usar na func
     int escolha;
     printf("\nO que pretendes fazer?");
     printf("\n1 : Ver informacao da conta");
     printf("\n2 : Fazer transferencia monetaria para outra conta");
-    printf("\n3 : Alterar password\n");
+    printf("\n3 : Alterar password");
+    printf("\n4 : Movimentos da conta\n");
     scanf("\n%i",&escolha);
     if(escolha == 1)
     {
@@ -141,6 +144,7 @@ void menuEscolhas()
                 {
                     conta.montante = conta.montante - transferir; //subtrair o saldo em conta
                     fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
+                    fwrite(&conta,sizeof(CONTABANCARIA),1,ptrHistorico);
                 }
                 else{
                     printf("\nERROR! NAO TENS DINHEIRO QUE PARA EFETUAR ESTA TRANSFERENCIA");
@@ -154,6 +158,7 @@ void menuEscolhas()
        
         fclose(ptr);
         fclose(ptr2);
+        rewind(ptrHistorico);
 
         remove("files/contas.bin");
         rename("files/replica.bin", "files/contas.bin");
@@ -176,6 +181,7 @@ void menuEscolhas()
             {
                 conta.montante = conta.montante + transferir; 
                 fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
+                fwrite(&conta,sizeof(CONTABANCARIA),1,ptrHistorico);
             }else{
                 fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2); //COPIA AS INFOS PARA O NOVO FICHEIRO
             }
@@ -183,7 +189,7 @@ void menuEscolhas()
 
         fclose(ptr);
         fclose(ptr2);
-
+        rewind(ptrHistorico);
         remove("files/contas.bin");
         rename("files/replica.bin","files/contas.bin");
 
@@ -216,8 +222,29 @@ void menuEscolhas()
         
         fclose(ptr);
         fclose(ptr2);
+        fclose(ptrHistorico);
 
         remove("files/contas.bin");
         rename("files/replicaPass.bin","files/contas.bin");
+
+    }
+
+    //adicionar um historico de movimentos de saldo
+    if(escolha == 4)
+    {
+        ptrHistorico = fopen("files/accHistory.bin", "rb");
+        
+        rewind(ptrHistorico); 
+
+        while(fread(&conta,sizeof(CONTABANCARIA),1,ptrHistorico))
+        {   
+            if(strcmp(conta.nome, verificarConta) == 0)
+            {
+                printf("\nHistorico de saldo : %i",conta.montante);
+            }
+        }
+
+        fclose(ptrHistorico);
+
     }
 }

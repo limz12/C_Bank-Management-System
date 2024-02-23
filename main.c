@@ -12,8 +12,9 @@ void main()
     signup();
     login();
 
+    /*
     printf("\n\t ###################### \t \n ");
     printf("\t      DevBy: VLima \t \n");
     printf("\t ###################### \t \n");
-    
+    */
 }
