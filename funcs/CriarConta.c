@@ -140,15 +140,16 @@ void menuEscolhas()
                 if(conta.montante > transferir)
                 {
                     conta.montante = conta.montante - transferir; //subtrair o saldo em conta
+                    fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
                 }
                 else{
                     printf("\nERROR! NAO TENS DINHEIRO QUE PARA EFETUAR ESTA TRANSFERENCIA");
                 }
             }else{
-                fwrite(&conta,sizeof(conta),1,ptr2); //COPIA AS INFOS PARA O NOVO FICHEIRO
+                fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2); //COPIA AS INFOS PARA O NOVO FICHEIRO
             }
         }
-        fwrite(&conta,sizeof(conta),1,ptr2); // ISTO E PARA ASSEGURAR QUE APENAS UMA INSTANCIA DE DADOS DO MESMO USER E GRAVADA
+        
 
        
         fclose(ptr);
@@ -163,39 +164,51 @@ void menuEscolhas()
         printf("\nPara qual conta queres transferir?");
         scanf("%s",&contaTransf);
 
-        //abrir o ficheiro para leitura
+       ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
+       //ptr2 = fopen("files/replica2.bin", "wb");
+       ptr2 = fopen("files/replica.bin", "wb");
+       
        rewind(ptr);
        rewind(ptr2);
 
-       //remove("files/contas.bin");
-       //rename("files/replica.bin", "files/contas.bin");
-
-       ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
-       ptr2 = fopen("files/replica2.bin", "wb");
-
-       //rewind(ptr);
-       //rewind(ptr2);
-
-        //percorrer o ficheiro pela conta que recebe o saldo
-        while(fread(&conta, sizeof(conta), 1, ptr))
+        while(fread(&conta,sizeof(conta), 1, ptr))
         {
-            if (strcmp(conta.nome , contaTransf) == 0) //se o nome for igual no ficheiro
+            if (strcmp(conta.nome, contaTransf) == 0) //SE O USER FOR IGUAL
             {
-                conta.montante = conta.montante + transferir;
-                fwrite(&conta, sizeof(conta),1,ptr2);
+                conta.montante = conta.montante + transferir; 
+                fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
             }else{
-                fwrite(&conta, sizeof(conta),1,ptr2);
-            } 
-
+                fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2); //COPIA AS INFOS PARA O NOVO FICHEIRO
+            }
         }
 
-        //fwrite(&conta, sizeof(conta), 1,ptr2);
+         // ISTO E PARA ASSEGURAR QUE APENAS UMA INSTANCIA DE DADOS DO MESMO USER E GRAVADA
 
         fclose(ptr);
         fclose(ptr2);
 
         remove("files/contas.bin");
-        rename("files/replica2.bin", "files/contas.bin");
+        rename("files/replica.bin","files/contas.bin");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //remove("files/contas.bin");
+        //rename("files/replica2.bin", "files/contas.bin");
 
          //se nao resolver trocar o fileptr2 para "ab" e a abrir o contas.bin 
     }
