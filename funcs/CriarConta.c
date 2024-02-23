@@ -200,7 +200,7 @@ void menuEscolhas()
         ptr = fopen("files/contas.bin", "rb");
         ptr2 = fopen("files/replicaPass.bin", "wb");
         rewind(ptr); //certificar que o ponteiro começa no inicio do ficheiro
-       
+        
         while(fread(&conta, sizeof(conta),1,ptr))
         {
             if(strcmp(conta.nome, verificarConta) == 0)
