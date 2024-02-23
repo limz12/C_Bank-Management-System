@@ -105,7 +105,8 @@ void menuEscolhas()
     int escolha;
     printf("\nO que pretendes fazer?");
     printf("\n1 : Ver informacao da conta");
-    printf("\n2 : Fazer transferencia monetaria para outra conta\n");
+    printf("\n2 : Fazer transferencia monetaria para outra conta");
+    printf("\n3 : Alterar password\n");
     scanf("\n%i",&escolha);
     if(escolha == 1)
     {
@@ -165,7 +166,6 @@ void menuEscolhas()
         scanf("%s",&contaTransf);
 
        ptr = fopen("files/contas.bin", "rb"); //para ler o conteudo do ficheiro
-       //ptr2 = fopen("files/replica2.bin", "wb");
        ptr2 = fopen("files/replica.bin", "wb");
        
        rewind(ptr);
@@ -182,34 +182,43 @@ void menuEscolhas()
             }
         }
 
-         // ISTO E PARA ASSEGURAR QUE APENAS UMA INSTANCIA DE DADOS DO MESMO USER E GRAVADA
-
         fclose(ptr);
         fclose(ptr2);
 
         remove("files/contas.bin");
         rename("files/replica.bin","files/contas.bin");
 
+    }
+    //Alterar a palavra passe da conta
+    if(escolha == 3)
+    {
+        FILE *ptr, *ptr2;
+        char newPass[30];
+        printf("Introduza a nova password : ");
+        scanf("%s", &newPass);
 
+        ptr = fopen("files/contas.bin", "rb");
+        ptr2 = fopen("files/replicaPass.bin", "wb");
+        rewind(ptr); //certificar que o ponteiro começa no inicio do ficheiro
+       
+        while(fread(&conta, sizeof(conta),1,ptr))
+        {
+            if(strcmp(conta.nome, verificarConta) == 0)
+            {
+                strcpy(conta.password,newPass); //passar a password que é tipo string
+                fwrite(&conta, sizeof(CONTABANCARIA), 1, ptr2);
+                printf("\nSucesso! Alterou a sua palavra passe!");
 
+            }else{
+                fwrite(&conta,sizeof(CONTABANCARIA),1,ptr2);
+            }
 
+        }
+        
+        fclose(ptr);
+        fclose(ptr2);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //remove("files/contas.bin");
-        //rename("files/replica2.bin", "files/contas.bin");
-
-         //se nao resolver trocar o fileptr2 para "ab" e a abrir o contas.bin 
+        remove("files/contas.bin");
+        rename("files/replicaPass.bin","files/contas.bin");
     }
 }
