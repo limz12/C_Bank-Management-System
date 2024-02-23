@@ -24,6 +24,12 @@ typedef struct conta
     int montante;
 }CONTABANCARIA;
 
+typedef struct historico //struct que vai ser guardada no ficheiro "accHistory"
+{
+    char nome[25];
+    int montante;
+}historyStruct;
+
 char verificarConta[25];
 char veriricarPass[30];
 char contaTransf[25];
@@ -118,11 +124,13 @@ void login() //FUNCAO PARA DAR  LOGIN NA CONTA
 
 void menuEscolhas()
 {
+
     FILE *ptrFile, *ptrHistorico;
     //guardar historico de transacoes
     ptrHistorico = fopen("files/accHistory.bin","ab");
     
     struct conta conta; //para poder usar na func
+
     int escolha;
     printf("\nO que pretendes fazer?");
     printf("\n1 : Ver informacao da conta");
@@ -252,6 +260,8 @@ void menuEscolhas()
     //adicionar um historico de movimentos de saldo
     if(escolha == 4)
     {
+        struct historico accH;
+        
         ptrHistorico = fopen("files/accHistory.bin", "rb");
         
         rewind(ptrHistorico); 
