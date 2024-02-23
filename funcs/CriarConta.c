@@ -276,7 +276,7 @@ void menuEscolhas()
         {   
             if(strcmp(conta.nome, verificarConta) == 0)
             {
-                printf("\nHistorico de saldo : %i Vindo/Para : %s",conta.montante, conta.nomeTransf);
+                printf("\nHistorico de saldo : %i (+) Vindo / (-)Para : %s",conta.montante, conta.nomeTransf);
             }
         }
 
